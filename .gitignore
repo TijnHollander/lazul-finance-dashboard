@@ -1,0 +1,6 @@
+node_modules
+/build
+/.svelte-kit
+/.vercel
+.DS_Store
+.env

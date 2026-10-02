@@ -1,0 +1,6 @@
+Datum;Typ;Wert;Notiz;ISIN;Stück;Gebühren;Steuern
+2025-02-01;Einlage;1500,00;;;;;
+2025-02-03;Kauf;-1000,00;iShares Core MSCI World;IE00B4L5Y983;10,52;-1,00;
+2025-08-03;Kauf;-300,00;Allianz SE;DE0008404005;1,12;-1,00;
+2026-01-15;Verkauf;400,00;iShares Core MSCI World;IE00B4L5Y983;3,7;-1,00;
+2026-05-08;Dividende;12,40;Allianz SE;DE0008404005;;;3,30
