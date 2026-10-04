@@ -45,5 +45,5 @@ export default async function handler(req, res) {
 			}
 		})
 	);
-	send(res, 200, { quotes: results, provider: 'yahoo' }, range === '1d' ? 60 : 300);
+	send(res, 200, { quotes: results, provider: 'yahoo' }, ['1d', '5d', '1mo'].includes(range) ? 30 : 600);
 }

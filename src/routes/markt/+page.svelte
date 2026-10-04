@@ -4,6 +4,9 @@
 	import Chart from '$lib/components/Chart.svelte';
 	import Sparkline from '$lib/components/Sparkline.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import TickerAnalysis from '$lib/components/TickerAnalysis.svelte';
+	import LiveBadge from '$lib/components/LiveBadge.svelte';
+	import { quoteTick } from '$lib/live';
 	import { watchlist, quotes, holdingOverrides } from '$lib/stores';
 	import { fetchQuotes, fetchHistory, provider, searchSymbol, type Provider, type SearchResult } from '$lib/market';
 	import { money, pct, timeAgo } from '$lib/format';
@@ -31,8 +34,11 @@
 		loading = false;
 	}
 
+	// grafiek opnieuw laden bij een andere ticker/periode én bij elke automatische koersverversing
 	$effect(() => {
-		if (selected) fetchHistory(selected, range).then((h) => (hist = h));
+		$quoteTick;
+		const sym = selected;
+		if (sym) fetchHistory(sym, range).then((h) => sym === selected && (hist = h));
 	});
 
 	let timer: ReturnType<typeof setTimeout>;
@@ -80,9 +86,12 @@
 <header class="mb-8 flex flex-wrap items-end justify-between gap-4">
 	<div>
 		<h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Markt</h1>
-		<p class="mt-1 text-sm text-white/50">Je volglijst met koersen. Ze lopen ook bovenin mee als tickerband.</p>
+		<p class="mt-1 text-sm text-white/50">Je volglijst met koersen, automatisch ververst. Klik op een aandeel voor de analyse onder de grafiek.</p>
 	</div>
-	<button class="btn btn-primary" onclick={() => load(true)} disabled={loading}><Icon name="refresh" class="size-4 {loading ? 'animate-spin' : ''}" /> Verversen</button>
+	<div class="flex items-center gap-3">
+		<LiveBadge />
+		<button class="btn btn-ghost" onclick={() => load(true)} disabled={loading} aria-label="Nu verversen" title="Nu verversen"><Icon name="refresh" class="size-4 {loading ? 'animate-spin' : ''}" /></button>
+	</div>
 </header>
 
 {#if prov === 'none'}
@@ -95,7 +104,7 @@
 {/if}
 
 <div class="grid gap-6 lg:grid-cols-5">
-	<section class="card p-0 lg:col-span-2">
+	<section class="card p-0 lg:sticky lg:top-16 lg:col-span-2 lg:self-start">
 		<div class="relative border-b border-white/10 p-4">
 			<div class="relative">
 				<input class="input pl-9" placeholder="Ticker of bedrijf toevoegen…" bind:value={q} oninput={onSearch} disabled={prov === 'none'} />
@@ -176,6 +185,7 @@
 					{prov === 'api' ? 'Grafiek laden…' : 'Grafieken zijn beschikbaar als de app op Vercel draait.'}
 				</div>
 			{/if}
+			<TickerAnalysis symbol={selected} livePrice={selQuote && isFinite(selQuote.price) ? selQuote.price : null} />
 		{:else}
 			<div class="grid h-80 place-items-center text-sm text-white/40">Kies een ticker uit je volglijst.</div>
 		{/if}

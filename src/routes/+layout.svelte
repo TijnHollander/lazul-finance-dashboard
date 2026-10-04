@@ -4,8 +4,9 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { profile, unlocked, settings, watchlist } from '$lib/stores';
-	import { fetchQuotes, fetchFx } from '$lib/market';
+	import { profile, unlocked, settings } from '$lib/stores';
+	import { fetchFx } from '$lib/market';
+	import { startAutoRefresh } from '$lib/live';
 	import Icon from '$lib/components/Icon.svelte';
 	import TickerTape from '$lib/components/TickerTape.svelte';
 	import Particles from '$lib/components/Particles.svelte';
@@ -23,7 +24,7 @@
 	$effect(() => {
 		if (allowed && !isLogin) {
 			fetchFx();
-			fetchQuotes($watchlist, { maxAgeMs: 120_000 });
+			startAutoRefresh();
 		}
 	});
 

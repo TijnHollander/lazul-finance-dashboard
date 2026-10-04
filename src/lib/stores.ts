@@ -80,3 +80,14 @@ export const age = derived([profile, rapport], ([$p, $r]) => {
 	const by = $r.data?.geboortejaar ?? $p?.birthYear;
 	return by ? new Date().getFullYear() - by : null;
 });
+
+// ─── eigen oordeel per aandeel (analyse onder de grafiek)
+export interface TickerNote {
+	voordeel: 'ja' | 'twijfel' | 'nee' | null;
+	sticky: 'ja' | 'twijfel' | 'nee' | null;
+	tienx: 'ja' | 'twijfel' | 'nee' | null;
+	notitie: string;
+	growth?: number; // eigen groeiaanname
+	exitPE?: number;
+}
+export const tickerNotes = persisted<Record<string, TickerNote>>('tickerNotes', {});

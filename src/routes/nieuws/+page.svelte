@@ -6,6 +6,8 @@
 	import { portfolio } from '$lib/portfolio';
 	import { fetchNews, isImportant, type NewsItem, type Provider } from '$lib/market';
 	import { timeAgo } from '$lib/format';
+	import { newsTick } from '$lib/live';
+	import LiveBadge from '$lib/components/LiveBadge.svelte';
 
 	let items = $state<NewsItem[]>([]);
 	let prov = $state<Provider>('none');
@@ -23,20 +25,32 @@
 			.filter((w) => w.length > 2 && !/^(ishares|vanguard|vaneck|xtrackers|spdr|amundi|invesco|core|msci|ftse)$/i.test(w))
 	);
 
-	async function load() {
-		loading = true;
+	let updated = $state<number | null>(null);
+	async function load(silent = false) {
+		if (!silent) loading = true;
 		error = null;
 		try {
 			const r = await fetchNews(symbols);
 			prov = r.provider;
 			const kw = keywords.length ? new RegExp(`\\b(${keywords.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'i') : null;
 			items = r.items.map((n) => (kw && kw.test(n.title) && !n.symbols.length ? { ...n, symbols: ['portfolio'] } : n));
+			updated = Date.now();
 		} catch (e) {
 			error = 'Nieuws kon niet worden geladen.';
 		}
 		loading = false;
 	}
-	onMount(load);
+	onMount(() => load());
+	// stil op de achtergrond verversen elke 5 minuten
+	let firstTick = true;
+	$effect(() => {
+		$newsTick;
+		if (firstTick) {
+			firstTick = false;
+			return;
+		}
+		load(true);
+	});
 
 	const shown = $derived(
 		items.filter((n) =>
@@ -53,7 +67,10 @@
 		<h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Nieuws</h1>
 		<p class="mt-1 text-sm text-white/50">Markt- en economienieuws, met voorrang voor nieuws over jouw posities en grote macrogebeurtenissen.</p>
 	</div>
-	<button class="btn btn-primary" onclick={load} disabled={loading}><Icon name="refresh" class="size-4 {loading ? 'animate-spin' : ''}" /> Verversen</button>
+	<div class="flex items-center gap-3">
+		<LiveBadge label={updated ? `bijgewerkt ${timeAgo(updated)} · elke 5 min` : 'elke 5 min'} />
+		<button class="btn btn-ghost" onclick={() => load()} disabled={loading} aria-label="Nu verversen" title="Nu verversen"><Icon name="refresh" class="size-4 {loading ? 'animate-spin' : ''}" /></button>
+	</div>
 </header>
 
 <div class="mb-6 flex flex-wrap gap-2">

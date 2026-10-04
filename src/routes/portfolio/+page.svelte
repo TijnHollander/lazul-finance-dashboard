@@ -7,6 +7,7 @@
 	import Stat from '$lib/components/Stat.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sparkline from '$lib/components/Sparkline.svelte';
+	import LiveBadge from '$lib/components/LiveBadge.svelte';
 	import { readFileText, type CsvTable } from '$lib/parsers/csv';
 	import { parsePortfolioFile, buildPortfolio, PF_FIELD_LABELS, PF_FIELDS_BY_MODE, type PfMapping, type PfMode } from '$lib/parsers/portfolio';
 	import { portfolioImports, holdingOverrides } from '$lib/stores';
@@ -134,9 +135,10 @@
 		<p class="mt-1 text-sm text-white/50">Importeer de export van je broker. Alles wordt alleen in deze browser opgeslagen.</p>
 	</div>
 	{#if $portfolio.hasData}
-		<div class="flex gap-2">
+		<div class="flex flex-wrap items-center gap-2">
+			{#if prov !== 'none'}<LiveBadge />{/if}
 			<button class="btn btn-ghost" onclick={linkSymbols} disabled={busy || prov === 'none'}><Icon name="search" /> Symbolen koppelen</button>
-			<button class="btn btn-primary" onclick={() => refresh(true)} disabled={busy}><Icon name="refresh" /> Koersen verversen</button>
+			<button class="btn btn-ghost" onclick={() => refresh(true)} disabled={busy} aria-label="Nu verversen" title="Nu verversen"><Icon name="refresh" /></button>
 		</div>
 	{/if}
 </header>

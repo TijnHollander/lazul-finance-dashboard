@@ -10,6 +10,7 @@
 	import { bereken } from '$lib/report';
 	import { categorize, summarize } from '$lib/cashflow';
 	import { fetchQuotes, fetchNews, isImportant, type NewsItem } from '$lib/market';
+	import { newsTick } from '$lib/live';
 	import { euro, pct, monthLabel, timeAgo } from '$lib/format';
 	import { SERIES, INK } from '$lib/palette';
 
@@ -25,6 +26,11 @@
 	});
 
 	let news = $state<NewsItem[]>([]);
+	$effect(() => {
+		if ($newsTick === 0) return;
+		const syms = Object.values($holdingOverrides).map((o) => o.symbol).filter(Boolean) as string[];
+		fetchNews(syms).then((r) => (news = r.items.filter(isImportant).slice(0, 5))).catch(() => {});
+	});
 	onMount(async () => {
 		const syms = Object.values($holdingOverrides).map((o) => o.symbol).filter(Boolean) as string[];
 		if (syms.length) fetchQuotes(syms);
