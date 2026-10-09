@@ -6,6 +6,8 @@
 	import Chart from '$lib/components/Chart.svelte';
 	import Stat from '$lib/components/Stat.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import BespaarPanel from '$lib/components/BespaarPanel.svelte';
+	import { page } from '$app/state';
 	import { readFileText, type CsvTable } from '$lib/parsers/csv';
 	import { parseBankFile, buildBankTx, BANK_FIELD_LABELS, type BankMapping, type BankField } from '$lib/parsers/bank';
 	import { CATEGORIES, categorize, ruleKey, summarize, FIXED, NEUTRAL, type Category } from '$lib/cashflow';
@@ -17,6 +19,12 @@
 	let pending = $state<{ file: string; table: CsvTable; mapping: BankMapping; confident: boolean; queue: File[] } | null>(null);
 	let cols = $state<Record<string, number | undefined>>({});
 	let toast = $state<string | null>(null);
+	type Tab = 'overzicht' | 'besparen' | 'transacties';
+	let tab = $state<Tab>((page.url.hash.slice(1) as Tab) || 'overzicht');
+	function kies(t: Tab) {
+		tab = t;
+		history.replaceState(history.state, '', `#${t}`);
+	}
 
 	async function handleFiles(files: File[]) {
 		const [first, ...rest] = files;
@@ -104,7 +112,7 @@
 				overigVariabel: (by('Overig') ?? 0) + (by('Contant geld') ?? 0) || null
 			}
 		});
-		goto(`${base}/rapport/?stap=2`);
+		goto(`${base}/rapport/algemeen/?stap=2`);
 	}
 
 	const monthsChart = $derived({
@@ -194,6 +202,16 @@
 		<Stat label="Naar sparen & beleggen" value={euro(s.avgSaved)} sub="gemiddeld per maand overgemaakt" tone="brand" />
 	</section>
 
+	<div class="mb-6 flex gap-1 rounded-xl border border-white/10 bg-white/[0.02] p-1" role="tablist">
+		{#each [['overzicht', 'Overzicht', 'chart'], ['besparen', 'Besparen', 'star'], ['transacties', 'Transacties', 'wallet']] as [k, l, ic] (k)}
+			<button role="tab" aria-selected={tab === k} class="flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors {tab === k ? 'border border-purple-500/30 bg-purple-950/50 text-purple-200' : 'border border-transparent text-white/55 hover:text-white'}" onclick={() => kies(k as Tab)}>
+				<Icon name={ic} class="size-4" />{l}
+			</button>
+		{/each}
+	</div>
+
+	{#if tab === 'overzicht'}
+
 	<p class="mb-6 flex items-start gap-2 text-xs text-white/45">
 		<Icon name="info" class="mt-0.5 size-3.5 shrink-0" />
 		<span>
@@ -224,6 +242,9 @@
 		</div>
 	</section>
 
+	{:else if tab === 'besparen'}
+		<BespaarPanel tx={periodTx} {cats} {s} />
+	{:else}
 	<section class="card p-0">
 		<div class="flex flex-wrap items-center gap-2 border-b border-white/10 p-4">
 			<h2 class="mr-auto font-semibold">Transacties</h2>
@@ -275,6 +296,7 @@
 			<div class="p-4 text-center"><button class="btn btn-ghost" onclick={() => (limit += 100)}>Meer tonen ({list.length - limit} over)</button></div>
 		{/if}
 	</section>
+	{/if}
 {/if}
 
 {#if pending && preview}

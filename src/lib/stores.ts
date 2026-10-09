@@ -91,3 +91,23 @@ export interface TickerNote {
 	exitPE?: number;
 }
 export const tickerNotes = persisted<Record<string, TickerNote>>('tickerNotes', {});
+
+// ─── extra rapporten (elk met eigen opslag)
+import type { HypotheekData } from './reports/hypotheek';
+import type { BelastingData } from './reports/belasting';
+import type { PensioenData } from './reports/pensioen';
+import type { DoelenData } from './reports/doelen';
+import type { SchuldenData } from './reports/schulden';
+export interface Saved<T> {
+	data: T | null;
+	savedAt: string | null;
+}
+export const hypotheekRapport = persisted<Saved<HypotheekData>>('rapport-hypotheek', { data: null, savedAt: null });
+export const belastingRapport = persisted<Saved<BelastingData>>('rapport-belasting', { data: null, savedAt: null });
+export const pensioenRapport = persisted<Saved<PensioenData>>('rapport-pensioen', { data: null, savedAt: null });
+export const doelenRapport = persisted<Saved<DoelenData>>('rapport-doelen', { data: null, savedAt: null });
+export const schuldenRapport = persisted<Saved<SchuldenData>>('rapport-schulden', { data: null, savedAt: null });
+
+// ─── bespaarplan (uitgaven): % minder per categorie
+export const bespaarplan = persisted<Record<string, number>>('bespaarplan', {});
+export const huishouden = persisted<{ volwassenen: number; kinderen: number }>('huishouden', { volwassenen: 1, kinderen: 0 });

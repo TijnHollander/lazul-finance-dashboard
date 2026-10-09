@@ -32,7 +32,7 @@
 		{ href: '/', label: 'Overzicht', icon: 'home' },
 		{ href: '/portfolio/', label: 'Portfolio', icon: 'pie' },
 		{ href: '/uitgaven/', label: 'Uitgaven & inkomsten', icon: 'wallet' },
-		{ href: '/rapport/', label: 'Rapport', icon: 'report' },
+		{ href: '/rapport/', label: 'Rapporten', icon: 'report' },
 		{ href: '/markt/', label: 'Markt', icon: 'chart' },
 		{ href: '/nieuws/', label: 'Nieuws', icon: 'news' },
 		{ href: '/instellingen/', label: 'Instellingen', icon: 'settings' }

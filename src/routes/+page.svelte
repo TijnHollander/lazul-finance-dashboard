@@ -72,7 +72,7 @@
 	const steps = $derived([
 		{ done: $portfolio.hasData, href: '/portfolio/', title: 'Importeer je portfolio', text: 'CSV van Trading 212, DEGIRO, Trade Republic of ING.', icon: 'pie' },
 		{ done: $bankTx.length > 0, href: '/uitgaven/', title: 'Importeer je bankafschrift', text: 'Zie je gemiddelde inkomsten en uitgaven per maand.', icon: 'wallet' },
-		{ done: !!$rapport.savedAt, href: '/rapport/', title: 'Vul het rapport in', text: 'Vergelijk je vermogen met leeftijdsgenoten en krijg een plan.', icon: 'report' }
+		{ done: !!$rapport.savedAt, href: '/rapport/algemeen/', title: 'Vul het rapport in', text: 'Vergelijk je vermogen met leeftijdsgenoten en krijg een plan.', icon: 'report' }
 	]);
 </script>
 
@@ -113,12 +113,12 @@
 			<section class="card">
 				<div class="mb-4 flex items-center justify-between">
 					<h2 class="font-semibold">Jij vs. leeftijdsgenoten</h2>
-					<a class="text-xs text-purple-300 hover:underline" href="{base}/rapport/">Volledig rapport →</a>
+					<a class="text-xs text-purple-300 hover:underline" href="{base}/rapport/algemeen/">Volledig rapport →</a>
 				</div>
 				<WealthCompare res={res} compact />
 			</section>
 		{:else}
-			<a href="{base}/rapport/" class="card group relative overflow-hidden transition-colors hover:border-purple-500/40">
+			<a href="{base}/rapport/algemeen/" class="card group relative overflow-hidden transition-colors hover:border-purple-500/40">
 				<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(147,51,234,0.25),transparent_60%)]"></div>
 				<div class="relative">
 					<h2 class="text-lg font-semibold">Loop jij voor of achter op je leeftijd?</h2>

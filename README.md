@@ -4,7 +4,22 @@ Een privacyvriendelijk financieel dashboard voor Nederland. Er is geen database 
 
 - **Portfolio**: importeer CSV-exports van Trading 212, DEGIRO, Trade Republic (via pytr / Portfolio Performance), ING Zelf Beleggen of een ander bestand (kolommen zelf koppelen). Je ziet posities, verdeling, resultaat, dividend en live koersen.
 - **Uitgaven & inkomsten**: importeer bankafschriften van ING, Rabobank, ABN AMRO, bunq, Revolut en andere banken. Transacties worden automatisch gecategoriseerd. Per maand zie je het gemiddelde, het **gewogen gemiddelde** (recente maanden tellen zwaarder) en de mediaan. Overboekingen naar je eigen spaar- of beleggingsrekening tellen niet als uitgave.
-- **Rapport**: het algemene rapport uit Lazul Finance, uitgebreid. Het geeft een score, een buffer-indicatie, een maandplan voor sparen en beleggen, tips met bronnen en een selectie ETF's. Daarnaast is er een **grafiek die je vermogen vergelijkt met leeftijdsgenoten** op basis van CBS-cijfers (gemiddelde en mediaan per leeftijdsgroep, met een geschatte percentielpositie), plus een projectie met een schuifje "wat als ik € X extra beleg?".
+  - **Tab Besparen**: de app zoekt patronen in je uitgaven:
+    - uitgaven vergeleken met Nibud-richtbedragen en vuistregels
+    - abonnementen en vaste afschrijvingen
+    - categorieën die elke maand stijgen ("lifestyle creep")
+    - een analyse van uit eten, bars en bezorging
+    - het salaris-effect: meer uitgeven vlak na je salaris
+    - je verdeling volgens de 50/30/20-regel en een weekdagpatroon
+    - een bespaarplan met schuifjes per categorie, met een voorspelling van wat het oplevert in 24 maanden en belegd na 10 jaar
+- **Rapporten**: zes rapporten die gegevens met elkaar delen:
+  - **Algemeen**: score, buffer, maandplan, ETF's en de vermogensvergelijking met leeftijdsgenoten (CBS)
+  - **Spaardoelen & FIRE**: maandinleg per doel, FIRE-getal, wanneer je financieel vrij bent en Coast FIRE
+  - **Schulden aflossen**: lawine- versus sneeuwbalmethode, schuldenvrij-datum en bespaarde rente
+  - **Hypotheek & koophuis**: maximale hypotheek (Nibud-woonquote 2026), netto maandlast, kosten koper, startersvrijstelling, NHG en oversluiten
+  - **Belastingvoordelen**: jaarruimte, hypotheekrenteaftrek, box 3, giften, schenken, toeslagen en zzp-regelingen, met een geschat voordeel per jaar
+  - **Pensioen & AOW-gat**: AOW, werkgeverspensioen en wat je zelf moet aanvullen, ook bij eerder stoppen
+  - Alle fiscale bedragen staan in `src/lib/reports/fiscaal2026.ts`. Werk dat bestand jaarlijks bij.
 - **Markt**: een volglijst met koersen en grafieken (1D t/m 5J). Dezelfde lijst loopt als tickerband bovenin de app. Klik op een aandeel en onder de grafiek staat een **analyse** met:
   - analistenrating (% kopen/houden/verkopen) en koersdoel
   - K/W-verhouding (nu en verwacht), PEG en beurswaarde
@@ -69,7 +84,9 @@ Het script pakt de zip uit en overschrijft de projectbestanden. `.git`, `node_mo
 api/                    Vercel-functies (quote, search, analysis, news, health)
 src/lib/parsers/        CSV-lezer, broker- en bankparsers
 src/lib/cashflow.ts     categorisering + (gewogen) gemiddelden
-src/lib/report.ts       rapportlogica, CBS-data, projectie, ETF's
+src/lib/report.ts       algemeen rapport, CBS-data, projectie, ETF's
+src/lib/reports/        hypotheek, belasting, pensioen, doelen/FIRE, schulden + fiscaal2026.ts
+src/lib/savings.ts      bespaarpatronen en prognose
 src/lib/market.ts       koers-/nieuwslaag (Vercel-API of Finnhub)
 src/lib/live.ts         automatisch verversen (koersen 60 s, nieuws 5 min)
 src/lib/analysis.ts     aandelenanalyse: groei, EPS, moat, 10x-som
